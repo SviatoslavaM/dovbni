@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Довбні</title>
+<style>
+:root{--bg:#f4f1ea;--fg:#1d1d1b;--card:#fff;--table:#2f6b4f;--red:#c0392b;--acc:#e0a526;--mut:#6b675e;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#1b1c1a;--fg:#eee9dd;--card:#f6f3ea;--table:#1f4a37;--mut:#a39e90}}
+*{box-sizing:border-box}
+input{font:inherit;padding:8px;border-radius:8px;border:1px solid #888;margin:4px 4px 4px 0;max-width:100%}.lob b{font-size:22px;letter-spacing:3px}
+body{margin:0;background:var(--bg);color:var(--fg);font-family:system-ui,Segoe UI,Arial,sans-serif}
+.wrap{max-width:760px;margin:0 auto;padding:12px}
+h1{font-size:20px;margin:0 0 8px}
+.top{display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;font-size:14px;margin-bottom:8px}
+.score{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin:8px 0}.sc{background:var(--table);color:#fff;border-radius:10px;padding:6px;text-align:center;font-size:12px}.sc b{display:block}.sc strong{font-size:22px;display:block}.sc.tp{outline:2px solid var(--acc)}.sc small{opacity:.9}.info{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;font-size:13px}.trump{background:var(--card);color:#111;border-radius:12px;padding:6px 12px;font-weight:700;font-size:16px;border:2px solid var(--acc)}.trump b{font-size:28px;vertical-align:middle}.trump.r b{color:var(--red)}.wrap .msg{position:sticky;top:0;z-index:5;font-size:16px;margin:8px 0}.msg.need{outline:3px solid var(--acc);animation:pulse2 1s infinite alternate}@keyframes pulse2{to{outline-color:transparent}}.card.tr{border-color:var(--acc)}.card.meld{box-shadow:0 0 0 3px #3fb950,0 0 14px #3fb950;transform:translateY(-8px)}.card.fresh{animation:drop .35s ease-out}@keyframes drop{from{transform:translateY(-40px) scale(1.3);opacity:0}}.pile{position:relative;height:34px;width:44px;margin:4px auto 0}.pile i{position:absolute;width:22px;height:30px;border-radius:4px;border:1px solid #fff8;background:repeating-linear-gradient(45deg,#345,#345 4px,#456 4px,#456 8px)}.tpb{background:var(--acc);color:#111;border-radius:6px;padding:0 5px;font-size:11px}.toast{position:fixed;left:50%;top:40%;transform:translate(-50%,-50%);background:var(--acc);color:#111;padding:12px 20px;border-radius:14px;font-weight:700;font-size:20px;z-index:20;animation:toast 2.2s forwards;pointer-events:none}@keyframes toast{0%{opacity:0;transform:translate(-50%,-30%)}15%,80%{opacity:1;transform:translate(-50%,-50%)}100%{opacity:0}}
+.table{background:var(--table);border-radius:16px;padding:12px;display:grid;grid-template-areas:". p2 ." "p1 mid p3" ". me .";grid-template-columns:1fr 2fr 1fr;gap:8px;color:#fff;min-height:300px;align-items:center;text-align:center}
+.p{font-size:13px}.p.act b{color:var(--acc)}
+.mid{grid-area:mid;display:grid;grid-template-areas:". t2 ." "t1 . t3" ". t0 .";gap:4px;min-height:150px;justify-items:center;align-items:center}
+.card{display:inline-block;position:relative;width:62px;height:90px;padding:0;background:var(--card);color:#111;border-radius:8px;border:2px solid #0003;overflow:hidden;cursor:default;font-family:inherit;transition:transform .2s,box-shadow .2s}.card svg{display:block;width:100%;height:100%}.mid .card{width:52px;height:75px}.card.win{box-shadow:0 0 0 3px var(--acc),0 0 18px 6px #e0a526aa;transform:scale(1.14);z-index:2;animation:pulse 1s infinite alternate}@keyframes pulse{to{box-shadow:0 0 0 3px var(--acc),0 0 26px 10px #e0a526cc}}.p.win{background:#e0a52633;border-radius:10px;outline:2px solid var(--acc);padding:4px}.p small{opacity:.95}
+.card.r{color:var(--red)}
+.card.back{background:repeating-linear-gradient(45deg,#345,#345 4px,#456 4px,#456 8px);width:22px;height:30px;border-radius:4px}
+button.card.ok{cursor:pointer;border-color:var(--acc);transform:translateY(-4px)}
+button.card:disabled{opacity:.45}
+.hand{display:flex;gap:6px;justify-content:center;flex-wrap:wrap;margin-top:6px}
+.me{grid-area:me}.p1{grid-area:p1}.p2{grid-area:p2}.p3{grid-area:p3}
+.msg{margin:10px 0;padding:10px;border-radius:10px;background:var(--card);color:#111;min-height:44px;font-size:14px}
+.btns{display:flex;gap:8px;flex-wrap:wrap;margin-top:6px}
+.btn{font:inherit;padding:8px 14px;border-radius:10px;border:0;background:var(--acc);color:#111;font-weight:700;cursor:pointer}
+.log{font-size:12px;color:var(--mut);max-height:90px;overflow:auto}
+</style>
+<script src="https://cdn.jsdelivr.net/npm/peerjs@1.5.4/dist/peerjs.min.js"></script>
+</head>
+<body>
+<div class="wrap lob" id="lobby">
+<h1>Довбні 🃏</h1>
+<div class="msg">
+<div>Нікнейм: <input id="nick" placeholder="Ваш нікнейм" maxlength="12"></div>
+<div class="btns"><button class="btn" id="bCreate">Створити гру</button><button class="btn" id="bSolo">Грати з ботами</button></div>
+<div style="margin-top:10px">Є код від друга? <input id="code" placeholder="Код" maxlength="4" size="6"> <button class="btn" id="bJoin">Приєднатися</button></div>
+<div id="lobbyInfo" style="margin-top:10px"></div>
+</div></div>
+<div class="wrap" id="game" style="display:none">
+<h1>Довбні</h1>
+<div class="info" id="info"></div>
+<div class="score" id="score"></div>
+<div class="msg" id="msg"></div>
+<div class="table" id="table"></div>
+<details class="log"><summary>Журнал ходів</summary><div id="log"></div></details>
+</div>
+<script>
+// ===== ЛОГІКА =====
+const SUITS=['♠','♣','♦','♥'];
+const NAMES={'♠':'піки','♣':'хрести','♦':'бубни','♥':'чирви'};
+const RANKS=['9','В','Д','К','10','Т']; // від молодшої до старшої
+const TARGET=50;
+let NAMEP=['Ви','Бот 1','Бот 2','Бот 3'];
+let G;
+const rnd=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
+const mkDeck=()=>SUITS.flatMap(s=>RANKS.map((r,i)=>({s,r,i})));
+const isPt=c=>c.r==='10'||c.r==='Т'||(c.r==='Д'&&c.s===G.trump);
+const strength=(c,led)=>c.s===G.trump?(c.r==='Д'?200:100+c.i):(c.s===led?c.i:-1);
+const sortHand=h=>h.sort((a,b)=>SUITS.indexOf(a.s)-SUITS.indexOf(b.s)||b.i-a.i);
+
+function newGame(){G={scores:[0,0,0,0],dealer:0,round:0,log:[]};startRound()}
+function startRound(){
+  const d=rnd(mkDeck()),tp=G.dealer;
+  G.round++;G.tp=tp;G.trump=null;G.trick=[];G.busy=false;G.over=false;
+  G.pts=[0,0,0,0];G.declared=[[],[],[],[]];G.hands=[[],[],[],[]];G.win=null;G.tk=[0,0,0,0];G.pen=[0,0,0,0];
+  G.hands[tp]=d.slice(0,3);G.rest=d.slice(3);G.phase='trump';
+  addLog(`Роздача ${G.round}. На козирі: ${NAMEP[tp]}.`);
+  render();
+  if(!HUM[tp])setTimeout(()=>chooseTrump(botTrump(G.hands[tp])),900);
+}
+function botTrump(h){let best=null,bs=-1;for(const s of SUITS){const x=h.filter(c=>c.s===s);const v=x.length*3+x.reduce((a,c)=>a+c.i,0)+(x.some(c=>c.r==='Д')?4:0);if(v>bs){bs=v;best=s}}return best}
+function chooseTrump(s){
+  G.trump=s;const tp=G.tp;let k=0;
+  G.hands[tp]=G.hands[tp].concat(G.rest.slice(0,3));k=3;
+  for(let p=0;p<4;p++)if(p!==tp){G.hands[p]=G.rest.slice(k,k+6);k+=6}
+  G.hands.forEach(sortHand);
+  G.phase='play';G.turn=tp;
+  addLog(`${NAMEP[tp]} обрав козир: ${s} ${NAMES[s]}.`);
+  render();next();
+}
+function legal(p){
+  const h=G.hands[p];if(!G.trick.length)return h.slice();
+  const led=G.trick[0].card.s;
+  const same=h.filter(c=>c.s===led);if(same.length)return same;
+  const tr=h.filter(c=>c.s===G.trump);return tr.length?tr:h.slice();
+}
+function next(){
+  if(G.phase!=='play'||G.busy)return;
+  if(!HUM[G.turn]){G.busy=true;setTimeout(()=>{G.busy=false;play(G.turn,botPick(G.turn))},900)}
+}
+function cost(c){return c.i+(c.s===G.trump?10:0)+(isPt(c)?5:0)}
+function botPick(p){
+  const L=legal(p),cheap=a=>a.slice().sort((x,y)=>cost(x)-cost(y))[0];
+  if(!G.trick.length){const ace=L.find(c=>c.r==='Т'&&c.s!==G.trump);return ace||cheap(L)}
+  const led=G.trick[0].card.s,best=Math.max(...G.trick.map(t=>strength(t.card,led)));
+  const win=L.filter(c=>strength(c,led)>best),ptsOn=G.trick.some(t=>isPt(t.card));
+  if(win.length&&(ptsOn||G.trick.length===3))return cheap(win);
+  return cheap(L);
+}
+function play(p,card){
+  G.hands[p]=G.hands[p].filter(c=>c!==card);
+  G.trick.push({p,card});G.fresh=card;
+  if(G.trick.length<4){G.turn=(p+1)%4;render();next();return}
+  G.win=trickWinner().p;G.busy=true;render();setTimeout(flyCards,1300);setTimeout(resolveTrick,1950);
+}
+function trickWinner(){
+  const led=G.trick[0].card.s;let w=G.trick[0],bs=-2;
+  for(const t of G.trick){const s=strength(t.card,led);if(s>bs){bs=s;w=t}}
+  return w;
+}
+function resolveTrick(){
+  const win=trickWinner().p,pts=G.trick.filter(t=>isPt(t.card)).length;
+  G.tk[win]++;G.win=null;
+  G.pts[win]+=pts;G.trick=[];G.busy=false;G.turn=win;
+  addLog(`${NAMEP[win]} взяв хід (+${pts}).`);
+  if(G.hands[0].length===0){G.pts[win]+=1;addLog(`${NAMEP[win]} взяв останній хід: +1.`);return endRound()}
+  const opts=pts>0?meldOptions(win):[];
+  if(opts.length&&HUM[win]){G.phase='meld';G.opts=opts;G.meldP=win;render();return}
+  if(opts.length)doMeld(win,opts[0]);
+  G.phase='play';render();next();
+}
+function meldOptions(p){
+  const h=G.hands[p],o=SUITS.filter(s=>!G.declared[p].includes(s)&&h.some(c=>c.s===s&&c.r==='К')&&h.some(c=>c.s===s&&c.r==='Д'));
+  return o.sort((a,b)=>(b===G.trump)-(a===G.trump));
+}
+function doMeld(p,s){
+  const v=s===G.trump?4:2;G.pts[p]+=v;G.declared[p].push(s);
+  addLog(`${NAMEP[p]} мендує ${s}: +${v}.`);say(`${NAMEP[p]} мендує ${s} (король + дама): +${v}`);
+}
+function endRound(){
+  G.pen=[0,0,0,0];
+  for(let p=0;p<4;p++){if(G.pts[p]===0)G.pen[p]=p===G.tp?-10:-5;G.scores[p]+=G.pts[p]+G.pen[p]}
+  addLog('Підсумок роздачі: '+G.pts.map((v,i)=>`${NAMEP[i]} ${v+G.pen[i]}`).join(', '));
+  G.pen.forEach((v,i)=>{if(v)addLog(`${NAMEP[i]}: штраф ${v}${i===G.tp?' (без очок на козирі)':''}.`)});
+  G.phase='end';const mx=Math.max(...G.scores);
+  G.over=mx>=TARGET;G.winner=G.scores.indexOf(mx);
+  G.dealer=(G.dealer+1)%4;render();
+}
+function addLog(t){G.log.unshift(t)}
+
+// ===== ІНТЕРФЕЙС =====
+const $=id=>document.getElementById(id);
+function pile(p){const n=Math.min(G.tk[p],6);if(!n)return '<i style="left:11px;opacity:.25;border-style:dashed"></i>';let h='';for(let k=0;k<n;k++)h+=`<i style="left:${4+k*4}px;top:${-k}px;transform:rotate(${(k*37%17)-8}deg)"></i>`;return h}
+function toast(t){const d=document.createElement('div');d.className='toast';d.textContent=t;document.body.appendChild(d);setTimeout(()=>d.remove(),2300)}
+function flyCards(){const to=document.querySelector(`.p[data-p="${G.win}"]`);if(!to)return;const r=to.getBoundingClientRect();document.querySelectorAll('.mid .card').forEach(el=>{const a=el.getBoundingClientRect();el.animate([{transform:'none',opacity:1},{transform:`translate(${r.left+r.width/2-a.left-a.width/2}px,${r.top+r.height/2-a.top-a.height/2}px) scale(.35) rotate(25deg)`,opacity:.3}],{duration:650,easing:'ease-in',fill:'forwards'})})}
+const COL=s=>(s==='♦'||s==='♥')?'#c0392b':'#1d1d1b';
+const TINT={'♠':'#34495e','♣':'#1e7a46','♦':'#d35400','♥':'#b03060'};
+const GL=(s,x,y,z,f)=>`<text x="${x}" y="${y}" font-size="${z}" text-anchor="middle" dominant-baseline="central" fill="${f||COL(s)}">${s}</text>`;
+function face(c){
+  const s=c.s,t=TINT[s],gold='#e0a526',skin='#f6d5ad';
+  let o=`<rect x="15" y="15" width="34" height="62" rx="4" fill="${t}" fill-opacity=".1" stroke="${t}" stroke-width="1"/>`;
+  const robe=`<path d="M17 77 L21 58 Q32 52 43 58 L47 77Z" fill="${t}"/>`+GL(s,32,69,10,'#fff');
+  const eyes='<circle cx="29.3" cy="46" r=".9" fill="#222"/><circle cx="34.7" cy="46" r=".9" fill="#222"/><path d="M29.5 50 Q32 52 34.5 50" stroke="#222" stroke-width=".8" fill="none"/>';
+  const head=`<circle cx="32" cy="47" r="7.5" fill="${skin}" stroke="#0004" stroke-width=".6"/>`;
+  if(c.r==='К'){
+    o+=robe+'<path d="M25 50 Q32 66 39 50 Q32 55 25 50Z" fill="#8d6e63"/>'+head+eyes+`<path d="M23 40 L24 28 L28 33 L32 25 L36 33 L40 28 L41 40Z" fill="${gold}" stroke="#8a5a00" stroke-width=".7"/><circle cx="32" cy="28" r="1.3" fill="#c0392b"/>`;
+  }else if(c.r==='Д'){
+    o+='<path d="M23 48 Q22 34 32 34 Q42 34 41 48 Q41 60 38 62 L26 62 Q23 60 23 48Z" fill="#6d4c41"/>'+robe+head+eyes+`<path d="M26 39 L28 32 L32 37 L36 32 L38 39Z" fill="${gold}" stroke="#8a5a00" stroke-width=".6"/><circle cx="41" cy="39" r="2.4" fill="#ff6b9a"/><circle cx="41" cy="39" r=".9" fill="${gold}"/>`;
+  }else{
+    o+=robe+head+eyes+`<path d="M23 43 Q24 31 34 32 Q42 33 41 43Z" fill="${t}" stroke="#0006" stroke-width=".6"/><rect x="21" y="41" width="22" height="3" rx="1.5" fill="#222"/><path d="M38 34 Q51 22 46 38 Q45 31 38 34Z" fill="${gold}" stroke="#8a5a00" stroke-width=".5"/>`;
+  }
+  return o;
+}
+function art(c){
+  const s=c.s,k=COL(s),t=TINT[s];let mid='';
+  if(c.r==='9'||c.r==='10'){
+    const L=[26,41,56,71].flatMap(y=>[[23,y],[41,y]]);
+    const P=c.r==='9'?L.concat([[32,48.5]]):L.concat([[32,33.5],[32,63.5]]);
+    mid=P.map(([x,y])=>GL(s,x,y,14)).join('');
+  }else if(c.r==='Т'){
+    mid=`<circle cx="32" cy="47" r="21" fill="${t}" fill-opacity=".12" stroke="${t}" stroke-width="1.5" stroke-dasharray="3 2"/>`+GL(s,32,48,34)+[[18,29],[46,29],[18,65],[46,65]].map(([x,y])=>GL('✦',x,y,8,'#e0a526')).join('');
+  }else mid=face(c);
+  const idx=`<text x="9" y="14" font-size="${c.r.length>1?10:12}" font-weight="700" text-anchor="middle" fill="${k}">${c.r}</text>`+GL(s,9,26,11);
+  return `<svg viewBox="0 0 64 92" font-family="system-ui,Arial,sans-serif" role="img" aria-label="${c.r} ${s}">${idx}<g transform="rotate(180 32 46)">${idx}</g>${mid}</svg>`;
+}
+const cardEl=(c,cls='')=>`<span class="card ${cls} ${c.s===G.trump?'tr':''} ${(G.phase==='meld'&&G.meldP===0&&G.opts&&G.opts.includes(c.s)&&(c.r==='К'||c.r==='Д'))?'meld':''}">${art(c)}</span>`;
+function render(){
+  $('score').innerHTML=G.scores.map((s,i)=>`<div class="sc ${i===G.tp?'tp':''}"><b>${NAMEP[i]}${i===G.tp?' ♛':''}</b><strong>${s}</strong><small>ця роздача: ${G.pts[i]}</small></div>`).join('');
+  $('info').innerHTML=(G.trump?`<div class="trump ${(G.trump==='♦'||G.trump==='♥')?'r':''}">КОЗИР <b>${G.trump}</b> ${NAMES[G.trump]}</div>`:'<div class="trump">Козир обирається…</div>')+`<div>На козирі: ${NAMEP[G.tp]} · гра до ${TARGET} · роздача ${G.round}</div>`;
+  const seat=(p,cls)=>`<div class="p ${cls} ${G.turn===p&&G.phase==='play'&&G.win==null?'act':''} ${G.win===p?'win':''}" data-p="${p}"><b>${G.win===p?'🏆 ':''}${NAMEP[p]}${p===0?' (ви)':''}</b>${p===G.tp?' <span class="tpb">на козирі</span>':''}<br>${p===0?'':'<span class="card back"></span> ×'+G.hands[p].length+'<br>'}<div class="pile">${pile(p)}</div><small>карт: ${G.tk[p]*4} · очок: ${G.pts[p]}</small></div>`;
+  const slots=[0,1,2,3].map(p=>{const t=G.trick.find(x=>x.p===p);return `<div style="grid-area:t${p}">${t?cardEl(t.card,(G.win===p?'win ':'')+(G.fresh===t.card?'fresh':'')):''}</div>`}).join('');
+  const myTurn=G.phase==='play'&&G.turn===0&&!G.busy,L=myTurn?legal(0):[];
+  const hand=G.hands[0].map((c,i)=>L.includes(c)?`<button class="card ok ${c.s===G.trump?'tr':''}" data-i="${i}">${art(c)}</button>`:cardEl(c)).join('');
+  $('table').innerHTML=seat(2,'p2')+seat(1,'p1')+`<div class="mid">${slots}</div>`+seat(3,'p3')+`<div class="me">${seat(0,'')}<div class="hand">${hand}</div></div>`;
+  document.querySelectorAll('button.card.ok').forEach(b=>b.onclick=()=>act('play',G.hands[0][+b.dataset.i]));
+  let m='',btn='';
+  if(G.phase==='trump'){
+    if(G.tp===0){m='Ви на козирі. Подивіться на 3 карти й оберіть козир.';
+      $('table').querySelector('.me .hand').innerHTML=G.hands[0].map(c=>cardEl(c)).join('');
+      btn=SUITS.map(s=>`<button class="btn" data-s="${s}">${s} ${NAMES[s]}</button>`).join('')}
+    else m=`${NAMEP[G.tp]} обирає козир…`;
+  }else if(G.phase==='play')m=G.win!=null?`<b>🏆 Хід бере: ${NAMEP[G.win]}!</b> Очок у ході: ${G.trick.filter(t=>isPt(t.card)).length}`:myTurn?'Ваш хід.':'Ходить '+NAMEP[G.turn]+'…';
+  else if(G.phase==='meld'&&G.meldP!==0)m=`${NAMEP[G.meldP]} вирішує, чи мендувати…`;
+  else if(G.phase==='meld'){m='Ви взяли хід з очками. Мендувати?';btn=G.opts.map(s=>`<button class="btn" data-m="${s}">Мендувати ${s} (+${s===G.trump?4:2})</button>`).join('')+'<button class="btn" data-m="">Пропустити</button>'}
+  else if(G.phase==='end'){
+    m='Роздача завершена. '+G.pts.map((v,i)=>`${NAMEP[i]}: ${v}${G.pen[i]?' ('+G.pen[i]+' штраф)':''}`).join(' · ');
+    if(G.over)m+=` Гру виграв: ${NAMEP[G.winner]}!`;
+    btn=ROLE==='client'?'':`<button class="btn" data-n="1">${G.over?'Нова гра':'Наступна роздача'}</button>`;if(ROLE==='client')m+=' Чекаємо, поки господар почне далі.'}
+  $('msg').innerHTML=`<div>${m}</div><div class="btns">${btn}</div>`;$('msg').className='msg'+((btn||myTurn)?' need':'');
+  document.querySelectorAll('[data-s]').forEach(b=>b.onclick=()=>act('trump',b.dataset.s));
+  document.querySelectorAll('[data-m]').forEach(b=>b.onclick=()=>act('meld',b.dataset.m));
+  document.querySelectorAll('[data-n]').forEach(b=>b.onclick=()=>act('next'));
+  $('log').innerHTML=G.log.slice(0,20).map(l=>`<div>${l}</div>`).join('');bcast();G.fresh=null;
+}
+
+// ===== МЕРЕЖА (PeerJS: гра напряму між браузерами, без свого сервера) =====
+let ROLE='host',HUM=[true,false,false,false],NICK=NAMEP,LN=[null,null,null,null],peer=null,conns={},hostConn=null,fly=false,CODE='',started=false;
+const PRE='dovbni-ksh-';
+const nick=()=>($('nick').value.trim().slice(0,12)||'Гравець');
+const showGame=()=>{$('lobby').style.display='none';$('game').style.display='block'};
+const info=h=>$('lobbyInfo').innerHTML=h;
+function bcast(){if(ROLE!=='host')return;for(const s in conns){try{conns[s].send({t:'state',v:viewFor(+s)})}catch(e){}}}
+function say(x){toast(x);for(const k in conns){try{conns[k].send({t:'toast',x})}catch(e){}}}
+function viewFor(s){
+  const r=i=>(i+s)%4,rot=a=>[0,1,2,3].map(i=>a[r(i)]),rel=p=>(p-s+4)%4;
+  const ft=G.trick.find(t=>t.card===G.fresh);
+  return{names:rot(NICK),scores:rot(G.scores),pts:rot(G.pts),tk:rot(G.tk),pen:rot(G.pen),
+    hands:[0,1,2,3].map(i=>i===0?G.hands[s]:new Array(G.hands[r(i)].length).fill(0)),
+    trick:G.trick.map(t=>({p:rel(t.p),card:t.card})),freshP:ft?rel(ft.p):null,
+    tp:rel(G.tp),turn:G.turn==null?null:rel(G.turn),win:G.win==null?null:rel(G.win),
+    trump:G.trump,phase:G.phase,round:G.round,over:G.over,winner:G.winner==null?null:rel(G.winner),
+    meldP:G.phase==='meld'?rel(G.meldP):null,opts:(G.phase==='meld'&&G.meldP===s)?G.opts:null,
+    busy:G.busy,log:G.log.slice(0,20)};
+}
+function act(t,v){
+  if(ROLE==='client'){hostConn.send({t,v:t==='play'?{s:v.s,r:v.r}:v});return}
+  doAct(0,t,v);
+}
+function doAct(s,t,v){
+  if(t==='play'){if(G.phase!=='play'||G.busy||G.turn!==s)return;const c=G.hands[s].find(x=>v&&x.s===v.s&&x.r===v.r);if(c&&legal(s).includes(c))play(s,c)}
+  else if(t==='trump'){if(G.phase==='trump'&&G.tp===s&&SUITS.includes(v))chooseTrump(v)}
+  else if(t==='meld'){if(G.phase==='meld'&&G.meldP===s){if(v&&G.opts.includes(v))doMeld(s,v);G.phase='play';render();next()}}
+  else if(t==='next'){if(s===0&&G.phase==='end')G.over?newGame():startRound()}
+}
+function dropSeat(s){
+  HUM[s]=false;NICK[s]+=' 🤖';if(!G||!G.hands)return;
+  if(G.phase==='trump'&&G.tp===s)chooseTrump(botTrump(G.hands[s]));
+  else if(G.phase==='meld'&&G.meldP===s){G.phase='play';render();next()}
+  else if(G.phase==='play'&&G.turn===s)next();else render();
+}
+function sendLobby(){
+  const names=LN.filter(Boolean);for(const s in conns)try{conns[s].send({t:'lobby',names})}catch(e){}
+  const link=location.href.split('?')[0]+'?room='+CODE;
+  info(`Код кімнати: <b>${CODE}</b><br>Посилання для друзів:<br><input readonly size="34" value="${link}" onclick="this.select()"><br>Гравці: ${names.join(', ')}<br><small>Вільні місця займатимуть боти.</small><br><button class="btn" id="bStart">Почати гру</button>`);
+  $('bStart').onclick=()=>{started=true;NICK=[0,1,2,3].map(i=>LN[i]||('Бот '+i));NAMEP=NICK;showGame();newGame()};
+}
+function tryHost(){
+  CODE=Array.from({length:4},()=>'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'[Math.floor(Math.random()*32)]).join('');
+  peer=new Peer(PRE+CODE);
+  peer.on('open',sendLobby);
+  peer.on('error',e=>{if(e.type==='unavailable-id'){peer.destroy();tryHost()}else info('Помилка зʼєднання: '+e.type)});
+  peer.on('connection',c=>{
+    c.on('data',m=>{
+      if(m.t==='hello'){const s=[1,2,3].find(i=>!conns[i]);if(started||!s){c.send({t:'full'});return}
+        c._s=s;conns[s]=c;LN[s]=String(m.n||'Гравець').slice(0,12);HUM[s]=true;sendLobby();return}
+      if(c._s)doAct(c._s,m.t,m.v);
+    });
+    c.on('close',()=>{const s=c._s;if(!s)return;delete conns[s];if(started)dropSeat(s);else{LN[s]=null;HUM[s]=false;sendLobby()}});
+  });
+}
+function onMsg(m){
+  if(m.t==='lobby')info('Ви в кімнаті. Гравці: '+m.names.join(', ')+'<br>Чекаємо, поки господар почне гру…');
+  else if(m.t==='full')info('Кімната заповнена або гра вже йде.');
+  else if(m.t==='toast')toast(m.x);
+  else if(m.t==='state'){G=m.v;NAMEP=G.names;G.fresh=G.freshP!=null?(G.trick.find(t=>t.p===G.freshP)||{}).card:null;showGame();
+    if(G.win!=null){if(!fly){fly=true;setTimeout(flyCards,1300)}}else fly=false;render()}
+}
+$('bSolo').onclick=()=>{started=true;NICK=[nick(),'Бот 1','Бот 2','Бот 3'];NAMEP=NICK;showGame();newGame()};
+$('bCreate').onclick=()=>{if(typeof Peer==='undefined')return info('Не завантажився модуль зʼєднання. Перевірте інтернет.');LN[0]=nick();tryHost()};
+$('bJoin').onclick=()=>{
+  const code=$('code').value.trim().toUpperCase();if(code.length!==4)return info('Введіть код із 4 символів.');
+  if(typeof Peer==='undefined')return info('Не завантажився модуль зʼєднання. Перевірте інтернет.');
+  ROLE='client';info('Підключаємось…');peer=new Peer();
+  peer.on('open',()=>{hostConn=peer.connect(PRE+code,{serialization:'json'});
+    hostConn.on('open',()=>hostConn.send({t:'hello',n:nick()}));
+    hostConn.on('data',onMsg);
+    hostConn.on('close',()=>info('Звʼязок із господарем втрачено. Оновіть сторінку.'))});
+  peer.on('error',e=>info(e.type==='peer-unavailable'?'Кімнату не знайдено. Перевірте код.':'Помилка: '+e.type));
+};
+const q=new URLSearchParams(location.search).get('room');if(q)$('code').value=q.toUpperCase();
+</script>
+</body>
+</html>
