@@ -8,7 +8,39 @@
 :root{--bg:#f4f1ea;--fg:#1d1d1b;--card:#fff;--table:#2f6b4f;--red:#c0392b;--acc:#e0a526;--mut:#6b675e;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#1b1c1a;--fg:#eee9dd;--card:#f6f3ea;--table:#1f4a37;--mut:#a39e90}}
 *{box-sizing:border-box}
-input{font:inherit;padding:8px;border-radius:8px;border:1px solid #888;margin:4px 4px 4px 0;max-width:100%}.lob b{font-size:22px;letter-spacing:3px}
+input{font:inherit;padding:8px;border-radius:8px;border:1px solid #888;margin:4px 4px 4px 0;max-width:100%}.lob b{font-size:22px;letter-spacing:3px}.ov{position:fixed;inset:0;background:#000b;z-index:30;display:none;align-items:center;justify-content:center;padding:12px}.box{background:var(--bg);color:var(--fg);border-radius:16px;max-width:560px;width:100%;max-height:90vh;overflow:auto;padding:16px;text-align:center;position:relative;z-index:32}.cf{position:fixed;top:-30px;font-size:24px;animation:fall 3.5s linear infinite;pointer-events:none;z-index:31}@keyframes fall{to{transform:translateY(115vh) rotate(360deg)}}.trk{margin:8px 0;padding:6px;border-radius:10px;background:#8881}.row{display:flex;gap:6px;justify-content:center;flex-wrap:wrap}.mi{display:flex;flex-direction:column;align-items:center;font-size:11px}.mi .card{width:52px;height:75px}
+body.lobbyon{background:radial-gradient(ellipse 90% 60% at 50% 0%,#2c7457 0%,#1d4f3c 50%,#10291f 100%) fixed;color:#f6f1e1;min-height:100vh}
+.lobby{max-width:480px;margin:0 auto;padding:20px 14px 40px;text-align:center}
+.hero{margin-bottom:18px}
+.fan{display:flex;justify-content:center;height:112px;margin-bottom:6px}
+.fan .card{width:70px;height:101px;margin:0 -13px;transform-origin:50% 130%;transform:rotate(var(--r));box-shadow:0 10px 20px #0007;animation:deal .6s both;animation-delay:calc(var(--i)*.12s)}
+@keyframes deal{from{opacity:0;transform:translateY(-70px) rotate(0deg)}}
+.logo{font:italic 800 clamp(52px,17vw,76px)/1 Palatino,"Palatino Linotype","Book Antiqua",Georgia,serif;letter-spacing:1px;margin:6px 0 4px;color:#f2c14e;text-shadow:0 3px 0 #7a5200,0 10px 26px #0009}
+.tag{margin:0;font-size:16px;opacity:.9}
+.panel{position:relative;background:#fffdf6;color:#1d1b1a;border-radius:22px;padding:30px 24px 32px;text-align:left;box-shadow:0 22px 50px #0008;margin-bottom:14px}
+.panel::before{content:'♠';position:absolute;top:8px;left:14px;font-size:20px;line-height:1}
+.panel::after{content:'♥';position:absolute;bottom:8px;right:14px;font-size:20px;line-height:1;color:#c0392b;transform:rotate(180deg)}
+.lbl{display:block;font-size:14px;font-weight:600;margin:0 0 4px}
+.panel input{width:100%;font:inherit;font-size:18px;padding:12px 14px;border-radius:12px;border:2px solid #cfc7ad;background:#fff;color:#111;margin:0 0 14px}
+.panel input:focus-visible,.btn:focus-visible,summary:focus-visible{outline:3px solid #2c7457;outline-offset:2px}
+.joinrow{display:flex;gap:8px;align-items:flex-start}.joinrow .btn{padding:13px 16px;white-space:nowrap}
+.codein{text-transform:uppercase;letter-spacing:.35em;text-align:center;font-weight:700;font-family:ui-monospace,Menlo,Consolas,monospace!important;flex:1;min-width:0}
+.or{display:flex;align-items:center;gap:10px;margin:2px 0 14px;font-size:13px;color:#6b675e}.or::before,.or::after{content:'';flex:1;height:1px;background:#cfc7ad}
+.btn.big{width:100%;padding:15px;font-size:18px;background:#1f5a45;color:#fff;margin-bottom:10px}
+.btn.ghost{width:100%;background:transparent;border:2px solid #cfc7ad;color:#1d1b1a}
+.note{min-height:20px;margin-top:10px;font-size:14px;color:#b03060;text-align:center}
+.invite{background:#f2c14e33;border:2px solid #f2c14e;border-radius:12px;padding:10px;margin-bottom:14px;font-size:15px}
+.invited #bCreate,.invited .or,.invited #bSolo{display:none}
+.roomcode{text-align:center;margin-bottom:12px}.roomcode small{display:block;font-size:14px;margin-bottom:4px}
+.roomcode .code{font:700 clamp(38px,12vw,54px)/1.1 ui-monospace,Menlo,Consolas,monospace;letter-spacing:.3em;padding:6px 0 6px .3em;background:#fff;border:2px dashed #1f5a45;border-radius:14px;color:#1f5a45}
+.seats{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:14px 0}
+.st{display:flex;align-items:center;gap:8px;padding:8px;border-radius:12px;background:#fff;border:2px solid #cfc7ad;font-size:15px;font-weight:600;min-width:0}
+.st.on{border-color:#3a9a55}.st span.nm{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.st small{display:block;font-weight:400;font-size:12px;opacity:.65}
+.av{flex:none;width:34px;height:34px;border-radius:50%;background:#1f5a45;color:#fff;display:grid;place-items:center;font-weight:700}.av.bot{background:#e6e0cc}
+.hint{font-size:14px;color:#55514a;margin:0 0 14px}.spin{display:inline-block;width:12px;height:12px;border:2px solid #1f5a45;border-top-color:transparent;border-radius:50%;animation:sp 1s linear infinite;vertical-align:-1px;margin-right:6px}@keyframes sp{to{transform:rotate(360deg)}}
+details.rules{text-align:left;font-size:15px;line-height:1.5;padding:4px 6px}details.rules summary{cursor:pointer;font-weight:600;padding:6px 0}details.rules p{margin:6px 0}
+@media (prefers-reduced-motion:reduce){.fan .card,.spin{animation:none}}
+button.card.cbk{cursor:pointer;border-color:var(--acc);background:repeating-linear-gradient(45deg,#345,#345 5px,#456 5px,#456 10px)}button.card.cbk:hover{transform:translateY(-4px)}
 body{margin:0;background:var(--bg);color:var(--fg);font-family:system-ui,Segoe UI,Arial,sans-serif}
 .wrap{max-width:760px;margin:0 auto;padding:12px}
 h1{font-size:20px;margin:0 0 8px}
@@ -31,15 +63,30 @@ button.card:disabled{opacity:.45}
 </style>
 <script src="https://cdn.jsdelivr.net/npm/peerjs@1.5.4/dist/peerjs.min.js"></script>
 </head>
-<body>
-<div class="wrap lob" id="lobby">
-<h1>Довбні 🃏</h1>
-<div class="msg">
-<div>Нікнейм: <input id="nick" placeholder="Ваш нікнейм" maxlength="12"></div>
-<div class="btns"><button class="btn" id="bCreate">Створити гру</button><button class="btn" id="bSolo">Грати з ботами</button></div>
-<div style="margin-top:10px">Є код від друга? <input id="code" placeholder="Код" maxlength="4" size="6"> <button class="btn" id="bJoin">Приєднатися</button></div>
-<div id="lobbyInfo" style="margin-top:10px"></div>
-</div></div>
+<body class="lobbyon">
+<div class="lobby" id="lobby">
+<header class="hero"><div class="fan" id="fan" aria-hidden="true"></div><h1 class="logo">Довбні</h1><p class="tag">Карткова гра на чотирьох. Грайте до 50 очок.</p></header>
+<main>
+<section class="panel" id="menu">
+<div class="invite" id="invite" style="display:none"></div>
+<label class="lbl" for="nick">Ваше імʼя за столом</label>
+<input id="nick" placeholder="Наприклад, Слава" maxlength="12" autocomplete="nickname">
+<div id="joinbox"><label class="lbl" for="code">Код кімнати від друга</label>
+<div class="joinrow"><input id="code" class="codein" placeholder="····" maxlength="4" autocapitalize="characters" autocomplete="off" spellcheck="false"><button class="btn" id="bJoin">Приєднатися</button></div></div>
+<div class="or"><span>або</span></div>
+<button class="btn big" id="bCreate">🎴 Створити гру для друзів</button>
+<button class="btn ghost" id="bSolo">🤖 Грати з ботами</button>
+<div class="note" id="note" role="status" aria-live="polite"></div>
+</section>
+<section class="panel" id="lobbyInfo" style="display:none"></section>
+</main>
+<details class="rules"><summary>Правила коротко</summary>
+<p>У колоді 24 карти: від 9 до туза. Кожному по 6 карт.</p>
+<p>Хто на козирі, бачить 3 карти й обирає козирну масть. Можна зіграти без козиря або відкрити одну із закритих карт.</p>
+<p>Ходіть масть у масть. Немає масті, кладіть козир, немає козиря, кладіть будь-яку. Козирна дама старша за всіх.</p>
+<p>Очки дають десятки, тузи й козирна дама, плюс 1 за останній хід. Король і дама однієї масті дають мендування: +2, козирні +4.</p>
+<p>Без очок за роздачу: −5, а на козирі: −10.</p></details>
+</div>
 <div class="wrap" id="game" style="display:none">
 <h1>Довбні</h1>
 <div class="info" id="info"></div>
@@ -48,10 +95,11 @@ button.card:disabled{opacity:.45}
 <div class="table" id="table"></div>
 <details class="log"><summary>Журнал ходів</summary><div id="log"></div></details>
 </div>
+<div class="ov" id="winov"></div><div class="ov" id="revov"></div><div class="ov" id="disc"></div>
 <script>
 // ===== ЛОГІКА =====
 const SUITS=['♠','♣','♦','♥'];
-const NAMES={'♠':'піки','♣':'хрести','♦':'бубни','♥':'чирви'};
+const NAMES={'♠':'піки','♣':'хрести','♦':'бубни','♥':'чирви','N':'без козиря'};
 const RANKS=['9','В','Д','К','10','Т']; // від молодшої до старшої
 const TARGET=50;
 let NAMEP=['Ви','Бот 1','Бот 2','Бот 3'];
@@ -66,20 +114,22 @@ function newGame(){G={scores:[0,0,0,0],dealer:0,round:0,log:[]};startRound()}
 function startRound(){
   const d=rnd(mkDeck()),tp=G.dealer;
   G.round++;G.tp=tp;G.trump=null;G.trick=[];G.busy=false;G.over=false;
-  G.pts=[0,0,0,0];G.declared=[[],[],[],[]];G.hands=[[],[],[],[]];G.win=null;G.tk=[0,0,0,0];G.pen=[0,0,0,0];
+  G.pts=[0,0,0,0];G.declared=[[],[],[],[]];G.hands=[[],[],[],[]];G.win=null;G.tk=[0,0,0,0];G.pen=[0,0,0,0];G.taken=[[],[],[],[]];G.reveal=null;
   G.hands[tp]=d.slice(0,3);G.rest=d.slice(3);G.phase='trump';
   addLog(`Роздача ${G.round}. На козирі: ${NAMEP[tp]}.`);
   render();
-  if(!HUM[tp])setTimeout(()=>chooseTrump(botTrump(G.hands[tp])),900);
+  if(!HUM[tp])setTimeout(()=>botMove(tp),900);
 }
-function botTrump(h){let best=null,bs=-1;for(const s of SUITS){const x=h.filter(c=>c.s===s);const v=x.length*3+x.reduce((a,c)=>a+c.i,0)+(x.some(c=>c.r==='Д')?4:0);if(v>bs){bs=v;best=s}}return best}
+function botMove(tp){if(G.reveal||G.phase!=='trump')return;const c=botTrump(G.hands[tp]);if(c==='N'&&Math.random()<.5)blind(Math.floor(Math.random()*3));else chooseTrump(c)}
+function blind(i){const c=G.rest[i];G.reveal={card:c};addLog(`${NAMEP[G.tp]} відкрив закриту карту ${c.r}${c.s}: козир ${NAMES[c.s]}.`);render();setTimeout(()=>{G.reveal=null;chooseTrump(c.s)},3200)}
+function botTrump(h){let best=null,bs=-1;for(const s of SUITS){const x=h.filter(c=>c.s===s);const v=x.length*3+x.reduce((a,c)=>a+c.i,0)+(x.some(c=>c.r==='Д')?4:0);if(v>bs){bs=v;best=s}}return(bs<14||Math.random()<.1)?'N':best}
 function chooseTrump(s){
-  G.trump=s;const tp=G.tp;let k=0;
+  if(G.phase!=='trump')return;G.trump=s;const tp=G.tp;let k=0;
   G.hands[tp]=G.hands[tp].concat(G.rest.slice(0,3));k=3;
   for(let p=0;p<4;p++)if(p!==tp){G.hands[p]=G.rest.slice(k,k+6);k+=6}
   G.hands.forEach(sortHand);
   G.phase='play';G.turn=tp;
-  addLog(`${NAMEP[tp]} обрав козир: ${s} ${NAMES[s]}.`);
+  addLog(`${NAMEP[tp]} обрав ${s==='N'?'гру без козиря':'козир: '+s+' '+NAMES[s]}.`);
   render();next();
 }
 function legal(p){
@@ -114,7 +164,7 @@ function trickWinner(){
 }
 function resolveTrick(){
   const win=trickWinner().p,pts=G.trick.filter(t=>isPt(t.card)).length;
-  G.tk[win]++;G.win=null;
+  G.tk[win]++;G.win=null;G.taken[win].push(G.trick.slice());
   G.pts[win]+=pts;G.trick=[];G.busy=false;G.turn=win;
   addLog(`${NAMEP[win]} взяв хід (+${pts}).`);
   if(G.hands[0].length===0){G.pts[win]+=1;addLog(`${NAMEP[win]} взяв останній хід: +1.`);return endRound()}
@@ -139,6 +189,7 @@ function endRound(){
   G.phase='end';const mx=Math.max(...G.scores);
   G.over=mx>=TARGET;G.winner=G.scores.indexOf(mx);
   G.dealer=(G.dealer+1)%4;render();
+  if(!G.over&&!HUM[G.tp])setTimeout(()=>{if(G.phase==='end'&&!G.over)startRound()},6000);
 }
 function addLog(t){G.log.unshift(t)}
 
@@ -180,7 +231,7 @@ function art(c){
 const cardEl=(c,cls='')=>`<span class="card ${cls} ${c.s===G.trump?'tr':''} ${(G.phase==='meld'&&G.meldP===0&&G.opts&&G.opts.includes(c.s)&&(c.r==='К'||c.r==='Д'))?'meld':''}">${art(c)}</span>`;
 function render(){
   $('score').innerHTML=G.scores.map((s,i)=>`<div class="sc ${i===G.tp?'tp':''}"><b>${NAMEP[i]}${i===G.tp?' ♛':''}</b><strong>${s}</strong><small>ця роздача: ${G.pts[i]}</small></div>`).join('');
-  $('info').innerHTML=(G.trump?`<div class="trump ${(G.trump==='♦'||G.trump==='♥')?'r':''}">КОЗИР <b>${G.trump}</b> ${NAMES[G.trump]}</div>`:'<div class="trump">Козир обирається…</div>')+`<div>На козирі: ${NAMEP[G.tp]} · гра до ${TARGET} · роздача ${G.round}</div>`;
+  $('info').innerHTML=(G.trump?`<div class="trump ${(G.trump==='♦'||G.trump==='♥')?'r':''}">${G.trump==='N'?'БЕЗ КОЗИРЯ <b>🚫</b>':`КОЗИР <b>${G.trump}</b> ${NAMES[G.trump]}`}</div>`:'<div class="trump">Козир обирається…</div>')+`<div>На козирі: ${NAMEP[G.tp]} · гра до ${TARGET} · роздача ${G.round}</div>`+((G.taken[0]||[]).length?`<button class="btn" id="bDisc">🗂 Мій відбій (${G.taken[0].length})</button>`:'');if($('bDisc'))$('bDisc').onclick=()=>{discOpen=true;fillDisc()};
   const seat=(p,cls)=>`<div class="p ${cls} ${G.turn===p&&G.phase==='play'&&G.win==null?'act':''} ${G.win===p?'win':''}" data-p="${p}"><b>${G.win===p?'🏆 ':''}${NAMEP[p]}${p===0?' (ви)':''}</b>${p===G.tp?' <span class="tpb">на козирі</span>':''}<br>${p===0?'':'<span class="card back"></span> ×'+G.hands[p].length+'<br>'}<div class="pile">${pile(p)}</div><small>карт: ${G.tk[p]*4} · очок: ${G.pts[p]}</small></div>`;
   const slots=[0,1,2,3].map(p=>{const t=G.trick.find(x=>x.p===p);return `<div style="grid-area:t${p}">${t?cardEl(t.card,(G.win===p?'win ':'')+(G.fresh===t.card?'fresh':'')):''}</div>`}).join('');
   const myTurn=G.phase==='play'&&G.turn===0&&!G.busy,L=myTurn?legal(0):[];
@@ -189,9 +240,9 @@ function render(){
   document.querySelectorAll('button.card.ok').forEach(b=>b.onclick=()=>act('play',G.hands[0][+b.dataset.i]));
   let m='',btn='';
   if(G.phase==='trump'){
-    if(G.tp===0){m='Ви на козирі. Подивіться на 3 карти й оберіть козир.';
+    if(G.tp===0){m=G.reveal?'Відкрито карту — вона визначає козир…':'Ви на козирі. Оберіть козир за 3 картами або відкрийте одну із закритих карт колоди.';
       $('table').querySelector('.me .hand').innerHTML=G.hands[0].map(c=>cardEl(c)).join('');
-      btn=SUITS.map(s=>`<button class="btn" data-s="${s}">${s} ${NAMES[s]}</button>`).join('')}
+      btn=SUITS.map(s=>`<button class="btn" data-s="${s}">${s} ${NAMES[s]}</button>`).join('')+'<button class="btn" data-s="N">🚫 без козиря (макс. 9 очок)</button><div style="width:100%">Або відкрийте закриту карту: її масть стане козирем, а сама карта піде до вас.</div>'+[0,1,2].map(i=>`<button class="card cbk" data-b="${i}" aria-label="Закрита карта ${i+1}"></button>`).join('')}
     else m=`${NAMEP[G.tp]} обирає козир…`;
   }else if(G.phase==='play')m=G.win!=null?`<b>🏆 Хід бере: ${NAMEP[G.win]}!</b> Очок у ході: ${G.trick.filter(t=>isPt(t.card)).length}`:myTurn?'Ваш хід.':'Ходить '+NAMEP[G.turn]+'…';
   else if(G.phase==='meld'&&G.meldP!==0)m=`${NAMEP[G.meldP]} вирішує, чи мендувати…`;
@@ -199,20 +250,42 @@ function render(){
   else if(G.phase==='end'){
     m='Роздача завершена. '+G.pts.map((v,i)=>`${NAMEP[i]}: ${v}${G.pen[i]?' ('+G.pen[i]+' штраф)':''}`).join(' · ');
     if(G.over)m+=` Гру виграв: ${NAMEP[G.winner]}!`;
-    btn=ROLE==='client'?'':`<button class="btn" data-n="1">${G.over?'Нова гра':'Наступна роздача'}</button>`;if(ROLE==='client')m+=' Чекаємо, поки господар почне далі.'}
-  $('msg').innerHTML=`<div>${m}</div><div class="btns">${btn}</div>`;$('msg').className='msg'+((btn||myTurn)?' need':'');
+    const can=G.over?ROLE!=='client':G.tp===0;btn=can?`<button class="btn" data-n="1">${G.over?'Нова гра':'Роздати наступну'}</button>`:'';if(!can)m+=G.over?' Нову гру почне господар.':` Наступну роздачу роздає ${NAMEP[G.tp]}.`}
+  if(G.reveal)btn='';$('msg').innerHTML=`<div>${m}</div><div class="btns">${btn}</div>`;$('msg').className='msg'+((btn||myTurn)?' need':'');
   document.querySelectorAll('[data-s]').forEach(b=>b.onclick=()=>act('trump',b.dataset.s));
+  document.querySelectorAll('[data-b]').forEach(b=>b.onclick=()=>act('blind',+b.dataset.b));
   document.querySelectorAll('[data-m]').forEach(b=>b.onclick=()=>act('meld',b.dataset.m));
   document.querySelectorAll('[data-n]').forEach(b=>b.onclick=()=>act('next'));
-  $('log').innerHTML=G.log.slice(0,20).map(l=>`<div>${l}</div>`).join('');bcast();G.fresh=null;
+  $('log').innerHTML=G.log.slice(0,20).map(l=>`<div>${l}</div>`).join('');fillWin();fillRev();if(discOpen)fillDisc();bcast();G.fresh=null;
 }
 
+let winShown=false,discOpen=false;
+function fillRev(){const el=$('revov');if(!G.reveal){el.style.display='none';el.innerHTML='';return}
+  if(el.innerHTML)return;const c=G.reveal.card;
+  el.innerHTML=`<div class="box"><h3>${NAMEP[G.tp]} відкрив(-ла) закриту карту</h3><div style="display:flex;justify-content:center;transform:scale(1.5);margin:34px 0">${cardEl(c)}</div><h2>Козир: ${c.s} ${NAMES[c.s]}</h2><small>Карта лишиться в руці гравця, іншим її більше не видно.</small></div>`;el.style.display='flex'}
+function fillWin(){
+  const el=$('winov');
+  if(!(G.phase==='end'&&G.over)){el.style.display='none';el.innerHTML='';winShown=false;return}
+  if(winShown)return;winShown=true;
+  const order=[0,1,2,3].sort((a,b)=>G.scores[b]-G.scores[a]),me=G.winner===0;
+  const conf=Array.from({length:28},(_,i)=>`<span class="cf" style="left:${(i*37)%100}vw;animation-delay:${(i%7)*.5}s">${['🎉','✨','🃏','🏆','🎊'][i%5]}</span>`).join('');
+  el.innerHTML=conf+`<div class="box"><div style="font-size:54px">🏆</div><h2>${me?'Вітаємо, ви перемогли! 🎉':'Перемога: '+NAMEP[G.winner]+'!'}</h2><p>Гра «Довбні» до ${TARGET} очок завершена.</p><ol style="text-align:left">${order.map(i=>`<li>${NAMEP[i]}${i===0?' (ви)':''}: <b>${G.scores[i]}</b></li>`).join('')}</ol><button class="btn" id="winX">Закрити</button></div>`;
+  el.style.display='flex';$('winX').onclick=()=>{el.style.display='none'};
+}
+function fillDisc(){
+  const el=$('disc');if(!discOpen){el.style.display='none';return}
+  const T=G.taken[0]||[];
+  el.innerHTML=`<div class="box"><h3>Мій відбій: ${T.length} ходів</h3><small>Видно лише ходи, які взяли ви. Чужий відбій подивитися не можна.</small>`+(T.length?T.map((tr,i)=>`<div class="trk"><b>Хід ${i+1}</b> · першим ходив: ${NAMEP[tr[0].p]}<div class="row">${tr.map(x=>`<div class="mi">${cardEl(x.card)}<span>${NAMEP[x.p]}</span></div>`).join('')}</div></div>`).join(''):'<p>Ви ще не брали ходів.</p>')+`<button class="btn" id="discX">Закрити</button></div>`;
+  el.style.display='flex';$('discX').onclick=()=>{discOpen=false;fillDisc()};
+}
 // ===== МЕРЕЖА (PeerJS: гра напряму між браузерами, без свого сервера) =====
 let ROLE='host',HUM=[true,false,false,false],NICK=NAMEP,LN=[null,null,null,null],peer=null,conns={},hostConn=null,fly=false,CODE='',started=false;
 const PRE='dovbni-ksh-';
-const nick=()=>($('nick').value.trim().slice(0,12)||'Гравець');
-const showGame=()=>{$('lobby').style.display='none';$('game').style.display='block'};
-const info=h=>$('lobbyInfo').innerHTML=h;
+const nick=()=>($('nick').value.replace(/[<>&"'`]/g,'').trim().slice(0,12)||'Гравець');
+const showGame=()=>{document.body.classList.remove('lobbyon');$('lobby').style.display='none';$('game').style.display='block'};
+const info=h=>$('note').innerHTML=h;
+const roomView=h=>{$('menu').style.display='none';$('lobbyInfo').style.display='block';$('lobbyInfo').innerHTML=h};
+const seatsHtml=n=>'<div class="seats">'+[0,1,2,3].map(i=>n[i]?`<div class="st on"><span class="av">${n[i][0].toUpperCase()}</span><span class="nm">${n[i]}<small>${i===0?'господар':'у грі'}</small></span></div>`:`<div class="st"><span class="av bot">🤖</span><span class="nm">Бот<small>вільне місце</small></span></div>`).join('')+'</div>';
 function bcast(){if(ROLE!=='host')return;for(const s in conns){try{conns[s].send({t:'state',v:viewFor(+s)})}catch(e){}}}
 function say(x){toast(x);for(const k in conns){try{conns[k].send({t:'toast',x})}catch(e){}}}
 function viewFor(s){
@@ -224,7 +297,7 @@ function viewFor(s){
     tp:rel(G.tp),turn:G.turn==null?null:rel(G.turn),win:G.win==null?null:rel(G.win),
     trump:G.trump,phase:G.phase,round:G.round,over:G.over,winner:G.winner==null?null:rel(G.winner),
     meldP:G.phase==='meld'?rel(G.meldP):null,opts:(G.phase==='meld'&&G.meldP===s)?G.opts:null,
-    busy:G.busy,log:G.log.slice(0,20)};
+    busy:G.busy,reveal:G.reveal?{card:G.reveal.card}:null,taken:[G.taken[s].map(tr=>tr.map(t=>({p:rel(t.p),card:t.card}))),[],[],[]],log:G.log.slice(0,20)};
 }
 function act(t,v){
   if(ROLE==='client'){hostConn.send({t,v:t==='play'?{s:v.s,r:v.r}:v});return}
@@ -232,20 +305,22 @@ function act(t,v){
 }
 function doAct(s,t,v){
   if(t==='play'){if(G.phase!=='play'||G.busy||G.turn!==s)return;const c=G.hands[s].find(x=>v&&x.s===v.s&&x.r===v.r);if(c&&legal(s).includes(c))play(s,c)}
-  else if(t==='trump'){if(G.phase==='trump'&&G.tp===s&&SUITS.includes(v))chooseTrump(v)}
+  else if(t==='trump'){if(G.phase==='trump'&&G.tp===s&&!G.reveal&&(SUITS.includes(v)||v==='N'))chooseTrump(v)}
+  else if(t==='blind'){if(G.phase==='trump'&&G.tp===s&&!G.reveal&&(v===0||v===1||v===2))blind(v)}
   else if(t==='meld'){if(G.phase==='meld'&&G.meldP===s){if(v&&G.opts.includes(v))doMeld(s,v);G.phase='play';render();next()}}
-  else if(t==='next'){if(s===0&&G.phase==='end')G.over?newGame():startRound()}
+  else if(t==='next'){if(G.phase!=='end')return;if(G.over){if(s===0)newGame()}else if(s===G.tp)startRound()}
 }
 function dropSeat(s){
   HUM[s]=false;NICK[s]+=' 🤖';if(!G||!G.hands)return;
-  if(G.phase==='trump'&&G.tp===s)chooseTrump(botTrump(G.hands[s]));
+  if(G.phase==='trump'&&G.tp===s)botMove(s);
   else if(G.phase==='meld'&&G.meldP===s){G.phase='play';render();next()}
-  else if(G.phase==='play'&&G.turn===s)next();else render();
+  else if(G.phase==='play'&&G.turn===s)next();else if(G.phase==='end'&&!G.over&&G.tp===s)startRound();else render();
 }
 function sendLobby(){
   const names=LN.filter(Boolean);for(const s in conns)try{conns[s].send({t:'lobby',names})}catch(e){}
   const link=location.href.split('?')[0]+'?room='+CODE;
-  info(`Код кімнати: <b>${CODE}</b><br>Посилання для друзів:<br><input readonly size="34" value="${link}" onclick="this.select()"><br>Гравці: ${names.join(', ')}<br><small>Вільні місця займатимуть боти.</small><br><button class="btn" id="bStart">Почати гру</button>`);
+  roomView(`<div class="roomcode"><small>Код кімнати</small><div class="code">${CODE}</div></div><button class="btn ghost" id="bCopy">📋 Скопіювати посилання для друзів</button>${seatsHtml(names)}<p class="hint">Вільні місця зайнятимуть боти. Можна починати, коли всі зайшли.</p><button class="btn big" id="bStart">Почати гру</button>`);
+  $('bCopy').onclick=()=>{const b=$('bCopy');(navigator.clipboard?navigator.clipboard.writeText(link):Promise.reject()).then(()=>{b.textContent='✅ Посилання скопійовано'},()=>{b.textContent=link})};
   $('bStart').onclick=()=>{started=true;NICK=[0,1,2,3].map(i=>LN[i]||('Бот '+i));NAMEP=NICK;showGame();newGame()};
 }
 function tryHost(){
@@ -256,14 +331,14 @@ function tryHost(){
   peer.on('connection',c=>{
     c.on('data',m=>{
       if(m.t==='hello'){const s=[1,2,3].find(i=>!conns[i]);if(started||!s){c.send({t:'full'});return}
-        c._s=s;conns[s]=c;LN[s]=String(m.n||'Гравець').slice(0,12);HUM[s]=true;sendLobby();return}
+        c._s=s;conns[s]=c;LN[s]=String(m.n||'Гравець').replace(/[<>&"'`]/g,'').slice(0,12)||'Гравець';HUM[s]=true;sendLobby();return}
       if(c._s)doAct(c._s,m.t,m.v);
     });
     c.on('close',()=>{const s=c._s;if(!s)return;delete conns[s];if(started)dropSeat(s);else{LN[s]=null;HUM[s]=false;sendLobby()}});
   });
 }
 function onMsg(m){
-  if(m.t==='lobby')info('Ви в кімнаті. Гравці: '+m.names.join(', ')+'<br>Чекаємо, поки господар почне гру…');
+  if(m.t==='lobby')roomView('<div class="roomcode"><small>Ви в кімнаті</small></div>'+seatsHtml(m.names)+'<p class="hint"><span class="spin"></span>Чекаємо, поки господар почне гру.</p>');
   else if(m.t==='full')info('Кімната заповнена або гра вже йде.');
   else if(m.t==='toast')toast(m.x);
   else if(m.t==='state'){G=m.v;NAMEP=G.names;G.fresh=G.freshP!=null?(G.trick.find(t=>t.p===G.freshP)||{}).card:null;showGame();
@@ -281,7 +356,9 @@ $('bJoin').onclick=()=>{
     hostConn.on('close',()=>info('Звʼязок із господарем втрачено. Оновіть сторінку.'))});
   peer.on('error',e=>info(e.type==='peer-unavailable'?'Кімнату не знайдено. Перевірте код.':'Помилка: '+e.type));
 };
-const q=new URLSearchParams(location.search).get('room');if(q)$('code').value=q.toUpperCase();
+$('fan').innerHTML=[{r:'Т',s:'♠',i:5},{r:'К',s:'♥',i:3},{r:'Д',s:'♦',i:2},{r:'В',s:'♣',i:1}].map((c,k)=>`<span class="card" style="--r:${(k-1.5)*13}deg;--i:${k};margin-top:${Math.abs(k-1.5)*8}px">${art(c)}</span>`).join('');
+const q=(new URLSearchParams(location.search).get('room')||'').toUpperCase().replace(/[^A-Z0-9]/g,'').slice(0,4);
+if(q){$('code').value=q;$('invite').style.display='block';$('invite').innerHTML='👋 Вас запросили в кімнату <b>'+q+'</b>. Введіть імʼя й натисніть «Приєднатися».';$('menu').classList.add('invited')}
 </script>
 </body>
 </html>
