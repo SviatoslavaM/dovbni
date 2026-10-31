@@ -86,6 +86,7 @@ button.card.ok:hover{transform:translateY(-22px);z-index:3}
 details.log{margin-top:12px;font-size:13px;color:#f6f1e1;opacity:.9}details.log summary{cursor:pointer;padding:4px 0}.log{color:#f6f1e1}
 .box{background:#fffdf6;color:#1d1b1a}
 @media (prefers-reduced-motion:reduce){.hand.dealin .card{animation:none}}
+.warn{background:#f2c14e33;border:2px solid #f2c14e;border-radius:12px;padding:10px;font-size:14px;margin:0 0 12px}
 .table{grid-template-areas:"p2 p2 p2" "p1 mid p3" "me me me";grid-template-columns:minmax(0,1fr) minmax(0,1.8fr) minmax(0,1fr);overflow:hidden}
 .p{justify-self:center;max-width:100%;font-size:12px}.p small{display:block}
 .me{text-align:center}.me .p{display:inline-block}
@@ -102,7 +103,7 @@ details.log{margin-top:12px;font-size:13px;color:#f6f1e1;opacity:.9}details.log 
 <label class="lbl" for="nick">Ваше імʼя за столом</label>
 <input id="nick" placeholder="Наприклад, Слава" maxlength="12" autocomplete="nickname">
 <div id="joinbox"><label class="lbl" for="code">Код кімнати від друга</label>
-<div class="joinrow"><input id="code" class="codein" placeholder="····" maxlength="4" autocapitalize="characters" autocomplete="off" spellcheck="false"><button class="btn" id="bJoin">Приєднатися</button></div></div>
+<div class="joinrow"><input id="code" class="codein" placeholder="·····" maxlength="9" inputmode="numeric" pattern="[0-9]*" autocomplete="off"><button class="btn" id="bJoin">Приєднатися</button></div></div>
 <div class="or"><span>або</span></div>
 <button class="btn big" id="bCreate">🎴 Створити гру для друзів</button>
 <button class="btn ghost" id="bSolo">🤖 Грати з ботами</button>
@@ -309,8 +310,14 @@ function fillDisc(){
   el.style.display='flex';$('discX').onclick=()=>{discOpen=false;fillDisc()};
 }
 // ===== МЕРЕЖА (PeerJS: гра напряму між браузерами, без свого сервера) =====
-let ROLE='host',HUM=[true,false,false,false],NICK=NAMEP,LN=[null,null,null,null],peer=null,conns={},hostConn=null,fly=false,CODE='',started=false;
+let ROLE='host',HUM=[true,false,false,false],NICK=NAMEP,LN=[null,null,null,null],peer=null,conns={},hostConn=null,fly=false,CODE='',started=false,joined=false;
 const PRE='dovbni-ksh-';
+function lost(c){const s=c._s;if(!s||c._lost)return;c._lost=1;if(conns[s]===c)delete conns[s];if(started)dropSeat(s);else{LN[s]=null;HUM[s]=false;sendLobby()}}
+setInterval(()=>{for(const s in conns){const c=conns[s];if(Date.now()-(c._seen||0)>30000){try{c.close()}catch(e){}lost(c)}}},5000);
+const POPT={config:{iceServers:[{urls:'stun:stun.l.google.com:19302'},{urls:'stun:stun.cloudflare.com:3478'},{urls:['turn:eu-0.turn.peerjs.com:3478','turn:us-0.turn.peerjs.com:3478'],username:'peerjs',credential:'peerjsp'}]}};
+setInterval(()=>{if(peer&&peer.disconnected&&!peer.destroyed&&ROLE==='host')try{peer.reconnect()}catch(e){}},8000);
+document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible'&&ROLE==='host'&&peer&&!peer.destroyed){if(peer.disconnected)try{peer.reconnect()}catch(e){}
+  try{navigator.wakeLock&&navigator.wakeLock.request('screen').catch(()=>{})}catch(e){}}});
 const nick=()=>($('nick').value.replace(/[<>&"'`]/g,'').trim().slice(0,12)||'Гравець');
 const showGame=()=>{document.body.classList.replace('lobbyon','gameon');$('lobby').style.display='none';$('game').style.display='block'};
 const info=h=>$('note').innerHTML=h;
@@ -354,25 +361,28 @@ function dropSeat(s){
 function sendLobby(){
   const names=LN.filter(Boolean);for(const s in conns)try{conns[s].send({t:'lobby',names})}catch(e){}
   const link=location.href.split('?')[0]+'?room='+CODE;
-  roomView(`<div class="roomcode"><small>Код кімнати</small><div class="code">${CODE}</div></div><button class="btn ghost" id="bCopy">📋 Скопіювати посилання для друзів</button>${seatsHtml(names)}<p class="hint">Вільні місця зайнятимуть боти. Можна починати, коли всі зайшли.</p><button class="btn big" id="bStart">Почати гру</button>`);
+  roomView(`<div class="roomcode"><small>Код кімнати</small><div class="code">${CODE}</div></div><button class="btn ghost" id="bCopy">📋 Скопіювати посилання для друзів</button>${navigator.share?'<button class="btn ghost" id="bShare" style="margin-top:8px">📤 Поділитися…</button>':''}${seatsHtml(names)}<p class="warn">⚠️ Не згортайте й не закривайте цю сторінку, поки друзі заходять. Скопіюйте посилання, надішліть його й одразу поверніться сюди.</p><p class="hint">Вільні місця зайнятимуть боти. Починайте, коли всі зайшли.</p><button class="btn big" id="bStart">Почати гру</button>`);
   $('bCopy').onclick=()=>{const b=$('bCopy');(navigator.clipboard?navigator.clipboard.writeText(link):Promise.reject()).then(()=>{b.textContent='✅ Посилання скопійовано'},()=>{b.textContent=link})};
+  if($('bShare'))$('bShare').onclick=()=>navigator.share({title:'Довбні',text:'Грай зі мною в Довбні! Код кімнати: '+CODE,url:link}).catch(()=>{});
   $('bStart').onclick=()=>{started=true;NICK=[0,1,2,3].map(i=>LN[i]||('Бот '+i));NAMEP=NICK;showGame();newGame()};
 }
 function tryHost(){
-  CODE=Array.from({length:4},()=>'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'[Math.floor(Math.random()*32)]).join('');
-  peer=new Peer(PRE+CODE);
-  peer.on('open',sendLobby);
-  peer.on('error',e=>{if(e.type==='unavailable-id'){peer.destroy();tryHost()}else info('Помилка зʼєднання: '+e.type)});
+  CODE=Array.from({length:5},()=>Math.floor(Math.random()*10)).join('');
+  peer=new Peer(PRE+CODE,POPT);
+  peer.on('open',()=>{clearTimeout(t0);sendLobby();try{navigator.wakeLock&&navigator.wakeLock.request('screen').catch(()=>{})}catch(e){}});
+  peer.on('disconnected',()=>{try{peer.reconnect()}catch(e){}});
+  const t0=setTimeout(()=>{if(!peer.open)info('Немає зʼєднання із сервером PeerJS. Перевірте інтернет і спробуйте ще раз за хвилину.')},12000);
+  peer.on('error',e=>{if(e.type==='unavailable-id'){peer.destroy();tryHost()}else info('Не вдалося підключитися до сервера PeerJS ('+e.type+'). Перевірте інтернет і спробуйте ще раз.')});
   peer.on('connection',c=>{
-    c.on('data',m=>{
+    c.on('data',m=>{c._seen=Date.now();if(m.t==='ping')return;
       if(m.t==='hello'){const s=[1,2,3].find(i=>!conns[i]);if(started||!s){c.send({t:'full'});return}
         c._s=s;conns[s]=c;LN[s]=String(m.n||'Гравець').replace(/[<>&"'`]/g,'').slice(0,12)||'Гравець';HUM[s]=true;sendLobby();return}
       if(c._s)doAct(c._s,m.t,m.v);
     });
-    c.on('close',()=>{const s=c._s;if(!s)return;delete conns[s];if(started)dropSeat(s);else{LN[s]=null;HUM[s]=false;sendLobby()}});
+    c.on('close',()=>lost(c));
   });
 }
-function onMsg(m){
+function onMsg(m){joined=true;
   if(m.t==='lobby')roomView('<div class="roomcode"><small>Ви в кімнаті</small></div>'+seatsHtml(m.names)+'<p class="hint"><span class="spin"></span>Чекаємо, поки господар почне гру.</p>');
   else if(m.t==='full')info('Кімната заповнена або гра вже йде.');
   else if(m.t==='toast')toast(m.x);
@@ -382,17 +392,31 @@ function onMsg(m){
 $('bSolo').onclick=()=>{started=true;NICK=[nick(),'Бот 1','Бот 2','Бот 3'];NAMEP=NICK;showGame();newGame()};
 $('bCreate').onclick=()=>{if(typeof Peer==='undefined')return info('Не завантажився модуль зʼєднання. Перевірте інтернет.');LN[0]=nick();tryHost()};
 $('bJoin').onclick=()=>{
-  const code=$('code').value.trim().toUpperCase();if(code.length!==4)return info('Введіть код із 4 символів.');
+  const code=$('code').value.replace(/\D/g,'');
+  if(code.length!==5)return info('Введіть код із 5 цифр.');
   if(typeof Peer==='undefined')return info('Не завантажився модуль зʼєднання. Перевірте інтернет.');
-  ROLE='client';info('Підключаємось…');peer=new Peer();
-  peer.on('open',()=>{hostConn=peer.connect(PRE+code,{serialization:'json'});
-    hostConn.on('open',()=>hostConn.send({t:'hello',n:nick()}));
+  if(peer)try{peer.destroy()}catch(e){}
+  ROLE='client';joined=false;let tries=0,pingT=null;info('<span class="spin"></span>Підключаємось…');
+  peer=new Peer(undefined,POPT);
+  const lost=()=>{const d=document.createElement('div');d.className='ov';d.style.display='flex';d.innerHTML='<div class="box"><h3>Звʼязок із господарем втрачено</h3><p>Попросіть господаря перевірити, що сторінка гри відкрита, і зайдіть знову.</p><button class="btn" onclick="location.reload()">Оновити сторінку</button></div>';document.body.appendChild(d)};
+  const dial=()=>{
+    if(joined)return;
+    hostConn=peer.connect(PRE+code,{serialization:'json'});
+    hostConn.on('open',()=>{hostConn.send({t:'hello',n:nick()});clearInterval(pingT);pingT=setInterval(()=>{try{hostConn.send({t:'ping'})}catch(e){}},4000)});
     hostConn.on('data',onMsg);
-    hostConn.on('close',()=>info('Звʼязок із господарем втрачено. Оновіть сторінку.'))});
-  peer.on('error',e=>info(e.type==='peer-unavailable'?'Кімнату не знайдено. Перевірте код.':'Помилка: '+e.type));
+    hostConn.on('error',e=>{if(!joined)info('Помилка зʼєднання: '+e.type)});
+    hostConn.on('close',()=>{if(joined)lost()});
+  };
+  peer.on('open',dial);
+  peer.on('error',e=>{
+    if(e.type==='peer-unavailable'&&!joined){
+      if(++tries<=25){info(`<span class="spin"></span>Кімнату ${code} зараз не видно. Можливо, господар згорнув сторінку. Попросіть його повернутися в гру, а я пробую ще (${tries}/25)…`);setTimeout(dial,3000)}
+      else info('Кімнату не знайдено. Перевірте код і попросіть господаря відкрити сторінку гри й створити кімнату знову.');
+    }else info('Помилка: '+e.type);
+  });
 };
 $('fan').innerHTML=[{r:'Т',s:'♠',i:5},{r:'К',s:'♥',i:3},{r:'Д',s:'♦',i:2},{r:'В',s:'♣',i:1}].map((c,k)=>`<span class="card" style="--r:${(k-1.5)*13}deg;--i:${k};margin-top:${Math.abs(k-1.5)*8}px">${art(c)}</span>`).join('');
-const q=(new URLSearchParams(location.search).get('room')||'').toUpperCase().replace(/[^A-Z0-9]/g,'').slice(0,4);
+const q=(new URLSearchParams(location.search).get('room')||'').replace(/\D/g,'').slice(0,5);
 if(q){$('code').value=q;$('invite').style.display='block';$('invite').innerHTML='👋 Вас запросили в кімнату <b>'+q+'</b>. Введіть імʼя й натисніть «Приєднатися».';$('menu').classList.add('invited')}
 </script>
 </body>
